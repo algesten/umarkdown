@@ -1,0 +1,29 @@
+UMarkdown: origin and license
+=============================
+
+Origin
+------
+UMarkdown is a modified fork of QLMarkdown by SBAREX:
+https://github.com/sbarex/QLMarkdown
+
+The fork is maintained at:
+https://github.com/algesten/UMarkdown
+
+This repository retains the upstream Git history. The QLMarkdown copyright
+notices and attributions remain applicable to the upstream code.
+
+Changes in this fork (2026-10-10)
+---------------------------------
+- Added separate read-only Markdown preview windows and multi-file opening.
+- Moved the existing configuration interface behind the Settings command.
+- Simplified the menus and removed example, donation, and update controls.
+- Renamed the app, project, binaries, and bundle identifiers to UMarkdown.
+- Added new UMarkdown icon artwork. The original QLMarkdown logo is not used
+  as the app icon.
+
+License
+-------
+UMarkdown is distributed under the GNU General Public License, version 3,
+as supplied in LICENSE.txt. Modified versions distributed to others must
+follow that license's source, notice, and change-marking requirements.
+Third-party components retain their own license notices.

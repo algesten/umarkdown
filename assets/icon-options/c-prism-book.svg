@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+ <defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#1C1749"/><stop offset=".5" stop-color="#3C236C"/><stop offset="1" stop-color="#521E58"/></linearGradient>
+  <linearGradient id="left" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#38E0E7"/><stop offset=".55" stop-color="#528FF8"/><stop offset="1" stop-color="#9C65EE"/></linearGradient>
+  <linearGradient id="right" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F79C58"/><stop offset=".45" stop-color="#F46EAD"/><stop offset="1" stop-color="#A966F2"/></linearGradient>
+  <filter id="shadow"><feGaussianBlur stdDeviation="24"/></filter>
+ </defs>
+ <rect x="42" y="42" width="940" height="940" rx="214" fill="url(#bg)"/>
+ <path d="M512 356c-70-86-169-126-290-105-27 5-43 24-43 53v418c0 29 21 49 52 48 110-4 198 25 281 95 83-70 171-99 281-95 31 1 52-19 52-48V304c0-29-16-48-43-53-121-21-220 19-290 105Z" fill="#0E1035" opacity=".6" transform="translate(0 24)" filter="url(#shadow)"/>
+ <path d="M512 342c-70-86-169-126-290-105-27 5-43 24-43 53v418c0 29 21 49 52 48 110-4 198 25 281 95V342Z" fill="url(#left)"/>
+ <path d="M512 342c70-86 169-126 290-105 27 5 43 24 43 53v418c0 29-21 49-52 48-110-4-198 25-281 95V342Z" fill="url(#right)"/>
+ <path d="M512 342v509" stroke="#F8EEFF" stroke-opacity=".7" stroke-width="20"/>
+ <path d="M260 328c71-6 129 14 180 56M584 384c51-42 109-62 180-56" fill="none" stroke="#FFFFFF" stroke-opacity=".4" stroke-width="18" stroke-linecap="round"/>
+</svg>

@@ -1,91 +1,72 @@
 {
-  "fill-specializations" : [
+  "groups": [
     {
-      "value" : {
-        "automatic-gradient" : "display-p3:0.16208,0.15104,0.10690,1.00000"
-      }
-    },
-    {
-      "appearance" : "dark",
-      "value" : {
-        "automatic-gradient" : "display-p3:0.11337,0.10583,0.07439,1.00000"
-      }
-    }
-  ],
-  "groups" : [
-    {
-      "blur-material" : null,
-      "layers" : [
+      "blur-material": null,
+      "layers": [
         {
-          "blend-mode" : "normal",
-          "fill-specializations" : [
+          "blend-mode": "normal",
+          "glass": false,
+          "hidden": false,
+          "image-name-specializations": [
             {
-              "value" : {
-                "automatic-gradient" : "extended-srgb:0.00000,0.53333,1.00000,1.00000",
-                "orientation" : {
-                  "start" : {
-                    "x" : 0.4999999999999994,
-                    "y" : 0
-                  },
-                  "stop" : {
-                    "x" : 0.5,
-                    "y" : 1
-                  }
-                }
-              }
-            },
-            {
-              "appearance" : "dark",
-              "value" : {
-                "automatic-gradient" : "display-p3:0.11647,0.38627,0.78897,1.00000"
-              }
+              "value": "details.svg"
             }
           ],
-          "glass" : true,
-          "hidden" : false,
-          "image-name-specializations" : [
+          "name": "Book Highlights"
+        },
+        {
+          "blend-mode": "normal",
+          "glass": false,
+          "hidden": false,
+          "image-name-specializations": [
             {
-              "value" : "logo.svg"
-            },
-            {
-              "idiom" : "square",
-              "value" : "logo.svg"
+              "value": "right-page.svg"
             }
           ],
-          "name" : "App Icon Template",
-          "position-specializations" : [
+          "name": "Coral Page"
+        },
+        {
+          "blend-mode": "normal",
+          "glass": false,
+          "hidden": false,
+          "image-name-specializations": [
             {
-              "appearance" : "light",
-              "value" : {
-                "scale" : 1,
-                "translation-in-points" : [
-                  0,
-                  0
-                ]
-              }
+              "value": "left-page.svg"
             }
-          ]
+          ],
+          "name": "Cyan Page"
+        },
+        {
+          "blend-mode": "normal",
+          "glass": false,
+          "hidden": false,
+          "image-name-specializations": [
+            {
+              "value": "background.svg"
+            }
+          ],
+          "name": "Prism Book Background"
         }
       ],
-      "refractivity" : {
-        "depth" : 0.6046875,
-        "enabled" : false,
-        "strength" : 0.641875
+      "refractivity": {
+        "depth": 0.6046875,
+        "enabled": false,
+        "strength": 0.641875
       },
-      "shadow" : {
-        "kind" : "neutral",
-        "opacity" : 0.5
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.34
       },
-      "translucency" : {
-        "enabled" : true,
-        "value" : 0.3
+      "translucency": {
+        "enabled": false,
+        "value": 0
       }
     }
   ],
-  "supported-platforms" : {
-    "circles" : [
+  "supported-platforms": {
+    "circles": [
       "watchOS"
     ],
-    "squares" : "shared"
+    "squares": "shared"
   }
 }

@@ -1,6 +1,6 @@
 //
 //  MdExtension.swift
-//  QLMarkdown
+//  UMarkdown
 //
 //  Created by Sbarex on 07/04/2026.
 //
