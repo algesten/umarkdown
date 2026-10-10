@@ -1,5 +1,9 @@
 #  TODO
 
+> [!WARNING]
+> Historical QLMarkdown TODO list. These are not planned tasks for the inactive
+> personal-use UMarkdown fork.
+
 - [ ] Bugfix: footnote option and super script extension are incompatible.
 - [ ] Bugfix: on dark style, there is a flashing white rectangle before show the preview on Monterey.
 - [ ] Investigate if export syntax highlighting colors scheme style as CSS var overriding the default style

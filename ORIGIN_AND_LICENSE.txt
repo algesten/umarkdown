@@ -1,12 +1,18 @@
 UMarkdown: origin and license
 =============================
 
+**********************************************************************
+* INACTIVE PERSONAL-USE FORK                                         *
+* This is not an active or maintained project. No builds are         *
+* published, and no support, issues, or pull requests are accepted.  *
+**********************************************************************
+
 Origin
 ------
 UMarkdown is a modified fork of QLMarkdown by SBAREX:
 https://github.com/sbarex/QLMarkdown
 
-The fork is maintained at:
+The source snapshot of this fork is published at:
 https://github.com/algesten/umarkdown
 
 This repository retains the upstream Git history. The QLMarkdown copyright

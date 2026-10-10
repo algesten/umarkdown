@@ -1,5 +1,9 @@
 # Changelog
 
+> [!WARNING]
+> Historical QLMarkdown changelog. This is not a release history or maintenance
+> plan for the inactive personal-use UMarkdown fork.
+
 ### 1.5.7 (59)
 
 Bugfix:
