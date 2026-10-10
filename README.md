@@ -4,6 +4,9 @@ UMarkdown is a read-only Markdown viewer for macOS with Quick Look support. Open
 one or more Markdown files from Finder or choose **File → Open Markdown…**. Each
 file opens in its own window. Configure rendering from **UMarkdown → Settings…**.
 
+This fork is for personal use. I do not distribute UMarkdown builds or provide
+support for UMarkdown. The source is published here under GPLv3.
+
 ## Build
 
 Open `UMarkdown.xcodeproj` in Xcode and select the `UMarkdown` scheme. The
