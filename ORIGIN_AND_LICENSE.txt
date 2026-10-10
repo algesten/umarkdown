@@ -7,7 +7,7 @@ UMarkdown is a modified fork of QLMarkdown by SBAREX:
 https://github.com/sbarex/QLMarkdown
 
 The fork is maintained at:
-https://github.com/algesten/UMarkdown
+https://github.com/algesten/umarkdown
 
 This repository retains the upstream Git history. The QLMarkdown copyright
 notices and attributions remain applicable to the upstream code.
