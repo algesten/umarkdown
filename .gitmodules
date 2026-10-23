@@ -10,3 +10,5 @@
 [submodule "cmark-gfm"]
 	path = cmark-gfm
 	url = https://github.com/github/cmark-gfm
+	# CMake builds generate untracked files inside this third-party checkout.
+	ignore = untracked
