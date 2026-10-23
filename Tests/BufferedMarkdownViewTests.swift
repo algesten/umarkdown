@@ -19,9 +19,16 @@ private final class PreviewTests: NSObject, NSApplicationDelegate {
         window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 800, height: 600),
                           styleMask: [.titled, .closable, .resizable], backing: .buffered, defer: false)
         window.title = "UMarkdown preview regression tests"
-        preview = BufferedMarkdownView(frame: window.contentView!.bounds)
-        preview.autoresizingMask = [.width, .height]
-        window.contentView = preview
+        preview = BufferedMarkdownView(frame: .zero)
+        preview.translatesAutoresizingMaskIntoConstraints = false
+        let content = window.contentView!
+        content.addSubview(preview)
+        NSLayoutConstraint.activate([
+            preview.topAnchor.constraint(equalTo: content.topAnchor),
+            preview.bottomAnchor.constraint(equalTo: content.bottomAnchor),
+            preview.leadingAnchor.constraint(equalTo: content.leadingAnchor),
+            preview.trailingAnchor.constraint(equalTo: content.trailingAnchor)
+        ])
         window.center()
         window.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)

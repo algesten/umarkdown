@@ -25,6 +25,10 @@ final class MarkdownPreviewWindowController: NSWindowController, NSWindowDelegat
         window.center()
         super.init(window: window)
         window.delegate = self
+        preview.onFailure = { [weak self] error in
+            guard let window = self?.window else { return }
+            NSAlert(error: error).beginSheetModal(for: window)
+        }
         preview.onDisplay = { [weak self] in
             guard let self else { return }
             self.search.documentWillLoad()
