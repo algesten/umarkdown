@@ -16,11 +16,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
 
     private var previewWindows: [MarkdownPreviewWindowController] = []
     private var receivedFileOpenAtLaunch = false
-    private var findPanel: NSPanel?
-    private var findField: NSSearchField?
-    private var findStatus: NSTextField?
-    private weak var findPreview: BufferedMarkdownView?
-    private var findWebView: WKWebView? { findPreview?.webView }
 
     func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
         return true
@@ -161,18 +156,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
     }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        if let editMenu = NSApp.mainMenu?.items.first(where: { $0.title == "Edit" })?.submenu {
-            editMenu.addItem(.separator())
-            let find = NSMenuItem(title: NSLocalizedString("Find…", comment: ""), action: #selector(showFind(_:)), keyEquivalent: "f")
-            find.target = self
-            editMenu.addItem(find)
-            let next = NSMenuItem(title: NSLocalizedString("Find Next", comment: ""), action: #selector(findNext(_:)), keyEquivalent: "g")
-            next.target = self
-            editMenu.addItem(next)
-            let previous = NSMenuItem(title: NSLocalizedString("Find Previous", comment: ""), action: #selector(findPrevious(_:)), keyEquivalent: "G")
-            previous.target = self
-            editMenu.addItem(previous)
-        }
         settingsWindowController = NSApp.windows.compactMap { $0.windowController as? PreferencesWindowController }.first
         settingsWindowController?.window?.orderOut(self)
         if let lang = Bundle.main.preferredLocalizations.first, lang != "en" {
@@ -209,65 +192,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
         return true
     }
 
-    @objc private func showFind(_ sender: Any?) {
-        guard let webView = activeWebView() ?? findWebView else { return }
-        findPreview = webView.superview as? BufferedMarkdownView
-        if findPanel == nil {
-            let panel = NSPanel(contentRect: NSRect(x: 0, y: 0, width: 390, height: 76),
-                                styleMask: [.titled, .closable], backing: .buffered, defer: false)
-            panel.title = NSLocalizedString("Find", comment: "")
-            panel.isFloatingPanel = true
-            let field = NSSearchField(frame: NSRect(x: 16, y: 36, width: 358, height: 28))
-            field.placeholderString = NSLocalizedString("Find in page", comment: "")
-            field.target = self
-            field.action = #selector(findChanged(_:))
-            field.sendsSearchStringImmediately = true
-            panel.contentView?.addSubview(field)
-            let status = NSTextField(labelWithString: "")
-            status.frame = NSRect(x: 16, y: 10, width: 358, height: 18)
-            panel.contentView?.addSubview(status)
-            findField = field
-            findStatus = status
-            findPanel = panel
-        }
-        findPanel?.center()
-        findPanel?.makeKeyAndOrderFront(sender)
-        findPanel?.makeFirstResponder(findField)
-        if findField?.stringValue.isEmpty == false { performFind(forward: true, newSearch: true) }
-    }
-
-    @objc private func findChanged(_ sender: Any?) {
-        performFind(forward: true, newSearch: true)
-    }
-
-    @objc private func findNext(_ sender: Any?) {
-        if findField?.stringValue.isEmpty != false { showFind(sender) }
-        else { performFind(forward: true, newSearch: false) }
-    }
-
-    @objc private func findPrevious(_ sender: Any?) {
-        if findField?.stringValue.isEmpty != false { showFind(sender) }
-        else { performFind(forward: false, newSearch: false) }
-    }
-
-    private func performFind(forward: Bool, newSearch: Bool) {
-        guard let webView = findWebView, let query = findField?.stringValue, !query.isEmpty else {
-            findStatus?.stringValue = ""
-            return
-        }
-        let configuration = WKFindConfiguration()
-        configuration.backwards = !forward
-        configuration.wraps = true
-        // Starting a new query searches from the current selection, then wraps through the page.
-        webView.find(query, configuration: configuration) { [weak self] result in
-            self?.findStatus?.stringValue = result.matchFound
-                ? NSLocalizedString("Match found", comment: "")
-                : NSLocalizedString("No matches", comment: "")
-        }
-    }
-
     private func activeWebView() -> WKWebView? {
-        guard let window = NSApp.keyWindow, window !== findPanel else { return nil }
+        guard let window = NSApp.keyWindow else { return nil }
         func firstWebView(in view: NSView) -> WKWebView? {
             if let preview = view as? BufferedMarkdownView { return preview.webView }
             if let webView = view as? WKWebView { return webView }
