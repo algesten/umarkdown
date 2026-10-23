@@ -5,7 +5,8 @@ import WebKit
 /// restoration never appear in the visible preview.
 final class BufferedMarkdownView: NSView, WKNavigationDelegate {
     private(set) var webView: WKWebView
-    weak var navigationDelegate: WKNavigationDelegate?
+    var openURL: (URL) -> Bool = { NSWorkspace.shared.open($0) }
+    var confirmOpenURL: (URL) -> Bool = BufferedMarkdownView.confirmOpenExternalURL
     var onDisplay: (() -> Void)?
     var onFailure: ((Error) -> Void)?
 
@@ -142,8 +143,42 @@ final class BufferedMarkdownView: NSView, WKNavigationDelegate {
     }
 
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        if navigationDelegate?.webView?(webView, decidePolicyFor: navigationAction, decisionHandler: decisionHandler) == nil {
+        guard navigationAction.navigationType == .linkActivated,
+              let url = navigationAction.request.url,
+              !url.isFileURL, !Self.isDocumentAnchor(url, in: webView) else {
             decisionHandler(.allow)
+            return
         }
+
+        // Handle links here so document windows and the Settings preview share the
+        // same policy, including target="_blank" links and replacement web views.
+        decisionHandler(.cancel)
+        // A script-synthesized click is also .linkActivated. Preserve the existing
+        // confirmation for schemes that can act on the user's behalf in another app.
+        if Self.allowedExternalSchemes.contains(url.scheme?.lowercased() ?? "") || confirmOpenURL(url) {
+            _ = openURL(url)
+        }
+    }
+
+    private static let allowedExternalSchemes: Set<String> = ["http", "https", "mailto"]
+
+    private static func isDocumentAnchor(_ url: URL, in webView: WKWebView) -> Bool {
+        guard let currentURL = webView.url,
+              var destination = URLComponents(url: url, resolvingAgainstBaseURL: true),
+              destination.fragment != nil,
+              var current = URLComponents(url: currentURL, resolvingAgainstBaseURL: true) else { return false }
+        destination.fragment = nil
+        current.fragment = nil
+        return destination == current
+    }
+
+    private static func confirmOpenExternalURL(_ url: URL) -> Bool {
+        let alert = NSAlert()
+        alert.alertStyle = .warning
+        alert.messageText = NSLocalizedString("Open this link in another application?", comment: "")
+        alert.informativeText = url.absoluteString
+        alert.addButton(withTitle: NSLocalizedString("Open", comment: ""))
+        alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+        return alert.runModal() == .alertFirstButtonReturn
     }
 }

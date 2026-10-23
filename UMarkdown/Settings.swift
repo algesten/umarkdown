@@ -1088,21 +1088,6 @@ class Settings: Codable {
     }
 }
 
-// MARK: - External link policy
-extension Settings {
-    /// Schemes a previewed document may hand to the system without asking. Everything else
-    /// (smb://, ssh://, vnc://, third-party app schemes) can act on the user's behalf in another
-    /// application, so it needs explicit confirmation.
-    static let allowedExternalSchemes: Set<String> = ["http", "https", "mailto"]
-
-    static func isExternalSchemeAllowed(_ url: URL) -> Bool {
-        guard let scheme = url.scheme?.lowercased() else {
-            return false
-        }
-        return allowedExternalSchemes.contains(scheme)
-    }
-}
-
 // MARK: - Mermaid support
 extension Settings {
     static let mermaidVersion = "12.0.0"

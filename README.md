@@ -31,6 +31,7 @@ extensions if you build a signed local copy.
 
 Run the native find integration tests with `sh Tests/run-find-tests.sh` on macOS.
 Run window placement checks with `sh Tests/run-window-placement-tests.sh`.
+Run link navigation checks with `sh Tests/run-link-tests.sh`.
 
 ## Origin and license
 

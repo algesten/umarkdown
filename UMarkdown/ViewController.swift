@@ -1130,7 +1130,6 @@ class ViewController: NSViewController {
         let configuration = WKWebViewConfiguration()
         configuration.preferences.setValue(true, forKey: "developerExtrasEnabled")
         preview = BufferedMarkdownView(frame: webViewContainer.bounds, configuration: configuration)
-        preview.navigationDelegate = self
         preview.onDisplay = { [weak self] in self?.progressIndicator.stopAnimation(self) }
         preview.onFailure = { [weak self] error in
             print(error)
@@ -1498,39 +1497,6 @@ extension ViewController: NSMenuItemValidation {
         }
         
         return true
-    }
-}
-
-// MARK: - WKNavigationDelegate
-extension ViewController: WKNavigationDelegate {
-    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        if navigationAction.navigationType == .linkActivated, let url = navigationAction.request.url, url.scheme != "file" {
-            // The document is untrusted, and WebKit reports a script-synthesized click as
-            // .linkActivated too, so a link activation is not proof of a user gesture. Hand only
-            // allowlisted schemes straight to the system and confirm anything else.
-            if Settings.isExternalSchemeAllowed(url) {
-                if NSWorkspace.shared.open(url) {
-                    decisionHandler(.cancel)
-                    return
-                }
-            } else if Self.confirmOpenExternalURL(url) {
-                NSWorkspace.shared.open(url)
-            }
-            decisionHandler(.cancel)
-            return
-        }
-        decisionHandler(.allow)
-    }
-    
-    /// Ask before letting a previewed document open a non-allowlisted scheme in another app.
-    static func confirmOpenExternalURL(_ url: URL) -> Bool {
-        let alert = NSAlert()
-        alert.alertStyle = .warning
-        alert.messageText = NSLocalizedString("Open this link in another application?", comment: "")
-        alert.informativeText = url.absoluteString
-        alert.addButton(withTitle: NSLocalizedString("Open", comment: ""))
-        alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
-        return alert.runModal() == .alertFirstButtonReturn
     }
 }
 
