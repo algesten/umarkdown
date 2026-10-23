@@ -1,3 +1,9 @@
+# Default workflow for every requested change
+
+For every change the user requests in this repository, automatically implement the change, run appropriate validation, build and install the updated UMarkdown app on this system using the procedure below, commit the requested changes, and push the commit to the current branch's configured upstream before reporting completion. Do not wait for a separate request or confirmation to install, commit, or push; these steps are already authorized as part of every change request. Obtain sandbox escalation when required.
+
+Commit only changes belonging to the task and leave unrelated working-tree changes untouched. If building, installation, committing, or pushing fails or is blocked, report the incomplete step explicitly. Report build, install, commit, and push results separately.
+
 # UMarkdown local build and install
 
 When changing the macOS app, build and install the changed app before reporting completion. The user has explicitly requested this routine for future modifications; do not wait for a separate install prompt. This repository used to live at `~/dev/QLMarkdown` and `~/dev/UMarkdown`; use the current checkout and the `UMarkdown` project and scheme.
