@@ -6,6 +6,10 @@ Commit only changes belonging to the task and leave unrelated working-tree chang
 
 # UMarkdown local build and install
 
+For every requested change, test Finder Quick Look (select a Markdown file and press Space), not just the standalone app. Use `TODO.md` as a smoke-test document and verify a rendered heading and task-list checkboxes rather than raw Markdown. Verify the installed Quick Look extension is registered and enabled with PlugInKit. A successful app preview or build does not establish that Finder Quick Look works. Report a blocked or failed Quick Look check explicitly.
+
+Use `bash scripts/build-local.sh > /tmp/umarkdown-build.log 2>&1` for the local build. It applies the command-line overrides below, then ad hoc signs the extensions with their required sandbox entitlements, omitting provisioning-dependent application groups. PlugInKit rejects extensions without sandboxing. The containing app is built without sandboxing for local file access. Keep project signing settings unchanged.
+
 When changing the macOS app, build and install the changed app before reporting completion. The user has explicitly requested this routine for future modifications; do not wait for a separate install prompt. This repository used to live at `~/dev/QLMarkdown` and `~/dev/UMarkdown`; use the current checkout and the `UMarkdown` project and scheme.
 
 Xcode is installed at `/Applications/Xcode.app`, but `xcode-select` may point to Command Line Tools. Set `DEVELOPER_DIR` for every `xcodebuild` invocation. The working local build from previous sessions is:
@@ -17,11 +21,11 @@ DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild \
   -derivedDataPath /tmp/umarkdown-derived \
   -jobs 4 ONLY_ACTIVE_ARCH=YES ARCHS=arm64 \
   CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM= CODE_SIGN_STYLE=Manual \
-  CODE_SIGN_ENTITLEMENTS= \
+  CODE_SIGN_ENTITLEMENTS= ENABLE_APP_SANDBOX=NO \
   build > /tmp/umarkdown-build.log 2>&1
 ```
 
-Check that the command exits successfully and the log ends with `BUILD SUCCEEDED`. The signed product is `/tmp/umarkdown-derived/Build/Products/Debug/UMarkdown.app`. Use ad hoc signing for local builds; it is available without an Apple development certificate or provisioning profile. The command clears provisioning-dependent entitlements for the local app and extensions, so this local build does not exercise sandbox or application-group capabilities. Keep these overrides on the command line; do not change the project signing settings. Never commit machine-specific signing identities, team overrides, provisioning profiles, generated signatures, build artifacts, or new machine-specific paths. If package resolution requires network or Xcode needs its normal caches/keychain, run the build with the required sandbox escalation. Do not replace the signed build with `CODE_SIGNING_ALLOWED=NO` for installation.
+Check that the command exits successfully and the log contains `BUILD SUCCEEDED`, followed by successful extension signing and signature verification. The signed product is `/tmp/umarkdown-derived/Build/Products/Debug/UMarkdown.app`. Use ad hoc signing for local builds; it is available without an Apple development certificate or provisioning profile. The raw Xcode command above requires the extension-signing step in `scripts/build-local.sh` before installation. Local builds do not exercise shared application-group capabilities. Keep overrides on the command line; do not change project signing settings. Never commit machine-specific signing identities, team overrides, provisioning profiles, generated signatures, build artifacts, or new machine-specific paths. If package resolution requires network or Xcode needs its normal caches/keychain, run the build with the required sandbox escalation. Do not replace the signed build with `CODE_SIGNING_ALLOWED=NO` for installation.
 
 Install the built app, replacing the user's existing local installation:
 
