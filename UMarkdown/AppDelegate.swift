@@ -161,12 +161,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
     }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        if let fileMenu = NSApp.mainMenu?.items.first(where: { $0.title == "File" })?.submenu {
-            fileMenu.addItem(.separator())
-            let printItem = NSMenuItem(title: NSLocalizedString("Print…", comment: ""), action: #selector(printPreview(_:)), keyEquivalent: "p")
-            printItem.target = self
-            fileMenu.addItem(printItem)
-        }
         if let editMenu = NSApp.mainMenu?.items.first(where: { $0.title == "Edit" })?.submenu {
             editMenu.addItem(.separator())
             let find = NSMenuItem(title: NSLocalizedString("Find…", comment: ""), action: #selector(showFind(_:)), keyEquivalent: "f")

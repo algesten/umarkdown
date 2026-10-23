@@ -75,6 +75,12 @@
                                                 <action selector="performClose:" target="Ady-hI-5gd" id="7R7-tx-3cM"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="prn-sep-001"/>
+                                        <menuItem title="Print…" keyEquivalent="p" id="prn-menu-01">
+                                            <connections>
+                                                <action selector="printPreview:" target="Voe-Tx-rLC" id="prn-act-001"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
