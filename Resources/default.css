@@ -54,9 +54,8 @@
   --hl_Diff_Deletion: #cf222e ;
   --hl_Diff_Addition: #1a7f37 ;
 
-  /* Read by QLMarkdown to size the Quick Look window.
-     Keep in sync with the min-width media query below, that can not use a variable. */
-  --content-max-width: 902px;
+  /* Fill the window; a custom pixel width also sizes the Quick Look window. */
+  --content-max-width: 100%;
 }
 
 @media (prefers-color-scheme: dark) {
