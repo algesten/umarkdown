@@ -9,6 +9,9 @@ UMarkdown is a read-only Markdown viewer for macOS with Quick Look support. Open
 one or more Markdown files from Finder or choose **File → Open Markdown…**. Each
 file opens in its own window. Configure rendering from **UMarkdown → Settings…**.
 
+Document windows remember their size and position for each display. If a display
+is disconnected or its resolution changes, the window fits an available screen.
+
 Press **⌘F** to find text in the current document. **⌘G** and **⇧⌘G** move
 between matches; Return and Shift-Return also work in the find field. Press
 **Esc** or click **Done** to dismiss the find bar and its highlights.
@@ -27,6 +30,7 @@ Select your own development team in Signing & Capabilities for the app and its
 extensions if you build a signed local copy.
 
 Run the native find integration tests with `sh Tests/run-find-tests.sh` on macOS.
+Run window placement checks with `sh Tests/run-window-placement-tests.sh`.
 
 ## Origin and license
 

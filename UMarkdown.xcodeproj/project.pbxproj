@@ -10,6 +10,7 @@
 		F17D00000000000000000001 /* FindBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17D00000000000000000011 /* FindBarView.swift */; };
 		F17D00000000000000000002 /* PreviewSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17D00000000000000000012 /* PreviewSearch.swift */; };
 		F17D00000000000000000003 /* MarkdownPreviewWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17D00000000000000000013 /* MarkdownPreviewWindowController.swift */; };
+		F17D00000000000000000005 /* WindowPlacement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17D00000000000000000015 /* WindowPlacement.swift */; };
 		F17D00000000000000000004 /* Find in Resources */ = {isa = PBXBuildFile; fileRef = F17D00000000000000000014 /* Find */; };
 		0342FC81767440D68CFDD7B4 /* wikilink.c in Sources */ = {isa = PBXBuildFile; fileRef = 1DDD0092C9DF487BBB99BB1D /* wikilink.c */; };
 		138DFA4523EA4D8DA48F233D /* wikilink.c in Sources */ = {isa = PBXBuildFile; fileRef = 1DDD0092C9DF487BBB99BB1D /* wikilink.c */; };
@@ -531,6 +532,7 @@
 		F17D00000000000000000011 /* FindBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindBarView.swift; sourceTree = "<group>"; };
 		F17D00000000000000000012 /* PreviewSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewSearch.swift; sourceTree = "<group>"; };
 		F17D00000000000000000013 /* MarkdownPreviewWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownPreviewWindowController.swift; sourceTree = "<group>"; };
+		F17D00000000000000000015 /* WindowPlacement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowPlacement.swift; sourceTree = "<group>"; };
 		F17D00000000000000000014 /* Find */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Find; sourceTree = "<group>"; };
 		1DDD0092C9DF487BBB99BB1D /* wikilink.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = wikilink.c; sourceTree = "<group>"; };
 		376A8FF7F19F47B3AD9B463D /* alert.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = alert.c; sourceTree = "<group>"; };
@@ -1025,6 +1027,7 @@
 				F17D00000000000000000011 /* FindBarView.swift */,
 				F17D00000000000000000012 /* PreviewSearch.swift */,
 				F17D00000000000000000013 /* MarkdownPreviewWindowController.swift */,
+				F17D00000000000000000015 /* WindowPlacement.swift */,
 				83598E6625818808004664D3 /* ViewController.swift */,
 				83598E6A2581880A004664D3 /* Main.storyboard */,
 				836B747C259E2D7B00A6A5F7 /* AboutViewController.swift */,
@@ -1673,6 +1676,7 @@
 				F17D00000000000000000001 /* FindBarView.swift in Sources */,
 				F17D00000000000000000002 /* PreviewSearch.swift in Sources */,
 				F17D00000000000000000003 /* MarkdownPreviewWindowController.swift in Sources */,
+				F17D00000000000000000005 /* WindowPlacement.swift in Sources */,
 				834A4EF429E8AD8C00692964 /* autolink.c in Sources */,
 				8376EADD27E8BD3D00AB44B8 /* Log.swift in Sources */,
 				834A4EFC29E8AD8C00692964 /* ext_scanners.c in Sources */,

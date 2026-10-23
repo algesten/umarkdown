@@ -10,6 +10,7 @@ final class MarkdownPreviewWindowController: NSWindowController, NSWindowDelegat
     let findBar = FindBarView()
     let search: PreviewSearch
     private var findBarHeight: NSLayoutConstraint!
+    private var placement: WindowPlacement?
 
     init(file: URL, html: String, searchResources: URL? = nil) throws {
         let resources = searchResources ?? Bundle.main.resourceURL!.appendingPathComponent("Find")
@@ -58,6 +59,7 @@ final class MarkdownPreviewWindowController: NSWindowController, NSWindowDelegat
         findBar.onMove = { [weak self] backwards in self?.search.move(backwards: backwards) }
         findBar.onDismiss = { [weak self] in self?.hideFindBar() }
         search.onChange = { [weak self] result in self?.findBar.update(result) }
+        placement = WindowPlacement(window: window)
         preview.loadHTMLString(html, baseURL: file.deletingLastPathComponent(), documentURL: file)
         monitor = MarkdownFileMonitor(file: file) { [weak self] in
             guard let self, let html = self.renderHTML?() else { return }
@@ -106,6 +108,14 @@ final class MarkdownPreviewWindowController: NSWindowController, NSWindowDelegat
         monitor = nil
         search.documentWillLoad()
         onClose?()
+    }
+
+    func windowDidFailToEnterFullScreen(_ window: NSWindow) {
+        placement?.endFullScreenTransition()
+    }
+
+    func windowDidFailToExitFullScreen(_ window: NSWindow) {
+        placement?.endFullScreenTransition()
     }
 
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
