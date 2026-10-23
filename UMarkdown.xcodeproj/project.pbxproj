@@ -230,6 +230,7 @@
 		835886B429E960050088DF7D /* math_ext.c in Sources */ = {isa = PBXBuildFile; fileRef = 835886B229E960050088DF7D /* math_ext.c */; };
 		835886B529E960050088DF7D /* math_ext.c in Sources */ = {isa = PBXBuildFile; fileRef = 835886B229E960050088DF7D /* math_ext.c */; };
 		83598E6525818808004664D3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83598E6425818808004664D3 /* AppDelegate.swift */; };
+		21B23F786D834A6286ABF102 /* BufferedMarkdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B23F786D834A6286ABF101 /* BufferedMarkdownView.swift */; };
 		83598E6725818808004664D3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83598E6625818808004664D3 /* ViewController.swift */; };
 		83598E692581880A004664D3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83598E682581880A004664D3 /* Assets.xcassets */; };
 		83598E6C2581880A004664D3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 83598E6A2581880A004664D3 /* Main.storyboard */; };
@@ -635,6 +636,7 @@
 		835886B229E960050088DF7D /* math_ext.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = math_ext.c; sourceTree = "<group>"; };
 		83598E6125818808004664D3 /* UMarkdown.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UMarkdown.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		83598E6425818808004664D3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		21B23F786D834A6286ABF101 /* BufferedMarkdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferedMarkdownView.swift; sourceTree = "<group>"; };
 		83598E6625818808004664D3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		83598E682581880A004664D3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		83598E6B2581880A004664D3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -1011,6 +1013,7 @@
 				83598E6E2581880A004664D3 /* UMarkdown.entitlements */,
 				83598E7925818839004664D3 /* UMarkdown-Bridging-Header.h */,
 				83598E6425818808004664D3 /* AppDelegate.swift */,
+				21B23F786D834A6286ABF101 /* BufferedMarkdownView.swift */,
 				83598E6625818808004664D3 /* ViewController.swift */,
 				83598E6A2581880A004664D3 /* Main.storyboard */,
 				836B747C259E2D7B00A6A5F7 /* AboutViewController.swift */,
@@ -1697,6 +1700,7 @@
 				834A4F4F29E8AD8E00692964 /* commonmark.c in Sources */,
 				834A4F1829E8AD8D00692964 /* blocks.c in Sources */,
 				83598E6525818808004664D3 /* AppDelegate.swift in Sources */,
+				21B23F786D834A6286ABF102 /* BufferedMarkdownView.swift in Sources */,
 				8376EAE227E8C67F00AB44B8 /* c_log.c in Sources */,
 				83EF95232585476800B56FA3 /* emoji.c in Sources */,
 				834A4F0D29E8AD8C00692964 /* cmark.c in Sources */,

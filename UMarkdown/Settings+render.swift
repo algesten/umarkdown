@@ -479,8 +479,6 @@ extension Settings {
             cmark_node_free(doc)
         }
         
-        let about = self.about ? "<div style='font-size: 72%; margin-top: 1.5em; padding-top: .5em; -webkit-user-select: none;'><hr style='height: 0; border: none; border-top: 1px solid rgba(0,0,0,.5); box-shadow: 0 1px 1px rgba(255, 255, 255, .5)'/>\(Self.aboutInfo)</div>\n" : ""
-        
         let html_debug = self.renderDebugInfo(baseDir: baseDir)
         // Render
         if let html2 = cmark_render_html(doc, options, cmark_parser_get_syntax_extensions(parser)) {
@@ -504,7 +502,7 @@ extension Settings {
             if self.taskListExtension, body.contains("type=\"checkbox\"") {
                 body = self.addTaskListClasses(body)
             }
-            return html_debug + header + body + about
+            return html_debug + header + body
         } else {
             return html_debug + "<p>RENDER FAILED!</p>"
         }
@@ -867,7 +865,7 @@ table.debug td {
         // handlers), so a Content-Security-Policy restricts script execution to the scripts added
         // here, which carry a per-render random nonce. Inline handlers, `javascript:` URLs and
         // injected <script> tags are blocked. Any script passed in `header`/`footer` must use `nonce`
-        // too; the host app injects its scroll tracker as a WKUserScript instead.
+        // too; the host app restores the viewport through WebKit's JavaScript API.
         let nonce = Data((0..<16).map { _ in UInt8.random(in: .min ... .max) }).base64EncodedString()
         let csp = [
             "default-src 'none'",

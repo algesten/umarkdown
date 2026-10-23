@@ -883,3 +883,32 @@ input[type="checkbox"] {
         padding-left: 0;
     }
 }
+
+@media print {
+    .toc-sidebar {
+        display: none;
+    }
+    .toc-layout {
+        display: block;
+    }
+    .toc-main {
+        padding-left: 0;
+    }
+    .markdown-body {
+        max-width: none;
+        padding: 0;
+        border: none;
+    }
+    .markdown-body h1,
+    .markdown-body h2,
+    .markdown-body h3,
+    .markdown-body h4,
+    .markdown-body h5,
+    .markdown-body h6 {
+        break-after: avoid;
+    }
+    .markdown-body img,
+    .markdown-body tr {
+        break-inside: avoid;
+    }
+}

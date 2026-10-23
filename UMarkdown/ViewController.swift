@@ -518,7 +518,7 @@ class ViewController: NSViewController {
     @IBOutlet weak var tabViewLeftConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var webViewContainer: NSView!
-    var webView: WKWebView!
+    private var preview: BufferedMarkdownView!
     @IBOutlet weak var textView: NSTextView!
     @IBOutlet weak var stylesPopup: NSPopUpButton!
     @IBOutlet weak var appearancePopup: NSPopUpButton!
@@ -548,7 +548,7 @@ class ViewController: NSViewController {
     
     var edited: Bool = false
     var allow_reload: Bool = true
-    fileprivate var markdown_source: DispatchSourceFileSystemObject?
+    fileprivate var markdownMonitor: MarkdownFileMonitor?
     fileprivate var pendingReload: DispatchWorkItem?
     var markdown_file: URL? {
         didSet {
@@ -565,7 +565,6 @@ class ViewController: NSViewController {
                 self.textView.string = ""
             }
             self.textView.setSelectedRange(NSRange(location: 0, length: 0))
-            prev_scroll = -1
             
             if isLoaded {
                 doRefresh(self)
@@ -573,10 +572,9 @@ class ViewController: NSViewController {
             edited = false
         }
     }
-    internal var prev_scroll: Int = -1
     
     deinit {
-        self.markdown_source?.cancel()
+        self.markdownMonitor = nil
     }
     
     @IBAction func doDirty(_ sender: Any) {
@@ -823,63 +821,24 @@ class ViewController: NSViewController {
         guard let file = self.markdown_file else {
             return
         }
-        let prev_scroll = self.prev_scroll
         self.openMarkdown(file: file)
-        self.prev_scroll = prev_scroll
-        if prev_scroll > 0 {
-            webView.evaluateJavaScript("document.documentElement.scrollTop = \(prev_scroll);")
-        }
     }
     
     func startMonitorFile() {
-        self.markdown_source?.cancel()
-        self.markdown_source = nil
-        self.allow_reload = true
-        
-        guard let file = markdown_file else {
-            return
+        markdownMonitor = nil
+        pendingReload?.cancel()
+        allow_reload = true
+        guard let file = markdown_file else { return }
+        markdownMonitor = MarkdownFileMonitor(file: file) { [weak self] in
+            self?.scheduleReloadFromDisk()
         }
-        
-        let fileDescriptor = open(FileManager.default.fileSystemRepresentation(withPath: file.path), O_EVTONLY)
-        guard fileDescriptor >= 0 else {
-            return
-        }
-        
-        let source = DispatchSource.makeFileSystemObjectSource(fileDescriptor: fileDescriptor, eventMask: .all, queue: DispatchQueue.main)
-        source.setEventHandler { [weak self] in
-            guard let me = self else {
-                return
-            }
-            // Editors usually save by writing a temp file and renaming it over the
-            // original, which replaces the inode this descriptor watches. Drop the
-            // now-stale source and debounce the reload so the new file is in place
-            // before reading it; `reloadMarkdown` re-arms the watch on the new inode.
-            me.markdown_source?.cancel()
-            me.markdown_source = nil
-            me.scheduleReloadFromDisk()
-        }
-        source.setCancelHandler {
-            close(fileDescriptor)
-        }
-        self.markdown_source = source
-        source.resume()
     }
 
-    /// Reload the source file after an external change. Debounced and retried so the
-    /// brief gap of an atomic save (rename over the original) is not mistaken for the
-    /// file being deleted — which previously left the preview stuck on a load error.
-    private func scheduleReloadFromDisk(retriesLeft: Int = 8) {
-        self.pendingReload?.cancel()
+    private func scheduleReloadFromDisk() {
+        pendingReload?.cancel()
         let work = DispatchWorkItem { [weak self] in
-            guard let me = self, let file = me.markdown_file else {
-                return
-            }
-            guard FileManager.default.fileExists(atPath: file.path) else {
-                if retriesLeft > 0 {
-                    me.scheduleReloadFromDisk(retriesLeft: retriesLeft - 1)
-                }
-                return
-            }
+            guard let me = self, let file = me.markdown_file,
+                  FileManager.default.isReadableFile(atPath: file.path) else { return }
             if me.edited {
                 let alert = NSAlert()
                 alert.alertStyle = .warning
@@ -896,10 +855,10 @@ class ViewController: NSViewController {
                 me.reloadMarkdown(me)
             }
         }
-        self.pendingReload = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: work)
+        pendingReload = work
+        DispatchQueue.main.async(execute: work)
     }
-    
+
     @IBAction func exportPreview(_ sender: Any) {
         let savePanel = NSSavePanel()
         savePanel.canCreateDirectories = true
@@ -1004,9 +963,6 @@ class ViewController: NSViewController {
     @IBAction func doRefresh(_ sender: Any)  {
         progressIndicator.startAnimation(self)
         
-        // self.webView.loadHTMLString("", baseURL: nil)
-        // self.webView.isHidden = true
-        
         let body: String
         let settings = self.updateSettings()
 
@@ -1031,46 +987,12 @@ class ViewController: NSViewController {
         
         let html = settings.getCompleteHTML(title: ".md", body: body)
         let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-        webView.loadHTMLString(html, baseURL: markdown_file?.deletingLastPathComponent())
+        preview.loadHTMLString(html, baseURL: markdown_file?.deletingLastPathComponent(), documentURL: markdown_file)
         
         let data = html.data(using: .utf8)
         
         elapsedTimeLabel = String.localizedStringWithFormat(NSLocalizedString("Rendered in %.3f seconds | %@", comment: ""), timeElapsed, self.byteFormatter.string(fromByteCount: Int64(data?.count ?? 0)))
     }
-    
-    /// Reports the preview scroll position to `scrollHandler`. Injected as a user script because the
-    /// rendered page's Content-Security-Policy blocks inline scripts without its nonce.
-    private static let scrollTrackerScript = """
-// Reference: http://www.html5rocks.com/en/tutorials/speed/animations/
-
-let last_known_scroll_position = 0;
-let ticking = false;
-let handler = 0;
-
-function doSomething(scroll_pos) {
-    // Do something with the scroll position
-    handler = 0;
-
-    window.webkit.messageHandlers.scrollHandler.postMessage({scroll: document.documentElement.scrollTop});
-
-}
-
-document.addEventListener('scroll', function(e) {
-  last_known_scroll_position = window.scrollY;
-
-  if (!ticking) {
-    if (handler) {
-        window.cancelAnimationFrame(handler);
-    }
-    handler = window.requestAnimationFrame(function() {
-      doSomething(last_known_scroll_position);
-      ticking = false;
-    });
-
-    ticking = true;
-  }
-});
-"""
     
     func importStyle(copyOnSharedFolder: Bool) -> URL? {
         let panel = NSOpenPanel()
@@ -1207,20 +1129,22 @@ document.addEventListener('scroll', function(e) {
         
         let configuration = WKWebViewConfiguration()
         configuration.preferences.setValue(true, forKey: "developerExtrasEnabled")
-        configuration.userContentController.add(self, name: "scrollHandler")
-        configuration.userContentController.addUserScript(WKUserScript(source: Self.scrollTrackerScript, injectionTime: .atDocumentEnd, forMainFrameOnly: true))
+        preview = BufferedMarkdownView(frame: webViewContainer.bounds, configuration: configuration)
+        preview.navigationDelegate = self
+        preview.onDisplay = { [weak self] in self?.progressIndicator.stopAnimation(self) }
+        preview.onFailure = { [weak self] error in
+            print(error)
+            self?.progressIndicator.stopAnimation(self)
+        }
+        preview.translatesAutoresizingMaskIntoConstraints = false
         
-        self.webView = WKWebView(frame: self.webViewContainer.bounds, configuration: configuration)
-        self.webView.navigationDelegate = self
-        self.webView.translatesAutoresizingMaskIntoConstraints = false
-        
-        self.webViewContainer.addSubview(self.webView, positioned: .below, relativeTo: self.progressIndicator)
+        webViewContainer.addSubview(preview, positioned: .below, relativeTo: progressIndicator)
         
         NSLayoutConstraint.activate([
-            webView.leadingAnchor.constraint(equalTo: webViewContainer.leadingAnchor),
-            webView.topAnchor.constraint(equalTo: webViewContainer.topAnchor),
-            webView.trailingAnchor.constraint(equalTo: webViewContainer.trailingAnchor),
-            webView.bottomAnchor.constraint(equalTo: webViewContainer.bottomAnchor)
+            preview.leadingAnchor.constraint(equalTo: webViewContainer.leadingAnchor),
+            preview.topAnchor.constraint(equalTo: webViewContainer.topAnchor),
+            preview.trailingAnchor.constraint(equalTo: webViewContainer.trailingAnchor),
+            preview.bottomAnchor.constraint(equalTo: webViewContainer.bottomAnchor)
         ])
         
         pauseAutoSave += 1
@@ -1579,24 +1503,6 @@ extension ViewController: NSMenuItemValidation {
 
 // MARK: - WKNavigationDelegate
 extension ViewController: WKNavigationDelegate {
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        if prev_scroll > 0 {
-            webView.evaluateJavaScript("document.documentElement.scrollTop = \(prev_scroll);", completionHandler: {_,_ in
-                // self.webView.isHidden = false
-                self.progressIndicator.stopAnimation(self)
-            })
-        } else {
-            // self.webView.isHidden = false
-            progressIndicator.stopAnimation(self)
-        }
-    }
-
-    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        print(error)
-        // self.webView.isHidden = false
-        progressIndicator.stopAnimation(self)
-    }
-    
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if navigationAction.navigationType == .linkActivated, let url = navigationAction.request.url, url.scheme != "file" {
             // The document is untrusted, and WebKit reports a script-synthesized click as
@@ -1625,15 +1531,6 @@ extension ViewController: WKNavigationDelegate {
         alert.addButton(withTitle: NSLocalizedString("Open", comment: ""))
         alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
         return alert.runModal() == .alertFirstButtonReturn
-    }
-}
-
-// MARK: - WKScriptMessageHandler
-extension ViewController: WKScriptMessageHandler {
-    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        if message.name == "scrollHandler", let dict = message.body as? [String : AnyObject], let p = dict["scroll"] as? Int {
-            self.prev_scroll = p
-        }
     }
 }
 
