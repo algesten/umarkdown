@@ -15,11 +15,13 @@ DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild \
   -project UMarkdown.xcodeproj -scheme UMarkdown -configuration Debug \
   -destination 'platform=macOS,arch=arm64' \
   -derivedDataPath /tmp/umarkdown-derived \
-  -allowProvisioningUpdates -jobs 4 ONLY_ACTIVE_ARCH=YES ARCHS=arm64 \
+  -jobs 4 ONLY_ACTIVE_ARCH=YES ARCHS=arm64 \
+  CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM= CODE_SIGN_STYLE=Manual \
+  CODE_SIGN_ENTITLEMENTS= \
   build > /tmp/umarkdown-build.log 2>&1
 ```
 
-Check that the command exits successfully and the log ends with `BUILD SUCCEEDED`. The signed product is `/tmp/umarkdown-derived/Build/Products/Debug/UMarkdown.app`. If package resolution requires network or Xcode needs its normal caches/keychain, run the build with the required sandbox escalation. Do not replace the signed build with `CODE_SIGNING_ALLOWED=NO` for installation.
+Check that the command exits successfully and the log ends with `BUILD SUCCEEDED`. The signed product is `/tmp/umarkdown-derived/Build/Products/Debug/UMarkdown.app`. Use ad hoc signing for local builds; it is available without an Apple development certificate or provisioning profile. The command clears provisioning-dependent entitlements for the local app and extensions, so this local build does not exercise sandbox or application-group capabilities. Keep these overrides on the command line; do not change the project signing settings. Never commit machine-specific signing identities, team overrides, provisioning profiles, generated signatures, build artifacts, or new machine-specific paths. If package resolution requires network or Xcode needs its normal caches/keychain, run the build with the required sandbox escalation. Do not replace the signed build with `CODE_SIGNING_ALLOWED=NO` for installation.
 
 Install the built app, replacing the user's existing local installation:
 

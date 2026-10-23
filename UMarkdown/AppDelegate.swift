@@ -57,7 +57,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
             }
             let body = try Settings.shared.render(file: markdown, baseDir: markdown.deletingLastPathComponent().path)
             let html = Settings.shared.getCompleteHTML(title: file.lastPathComponent, body: body)
-            let controller = MarkdownPreviewWindowController(file: file, html: html)
+            let controller = try MarkdownPreviewWindowController(file: markdown, html: html)
+            controller.renderHTML = {
+                guard let body = try? Settings.shared.render(file: markdown, baseDir: markdown.deletingLastPathComponent().path) else { return nil }
+                return Settings.shared.getCompleteHTML(title: file.lastPathComponent, body: body)
+            }
             controller.onClose = { [weak self, weak controller] in
                 self?.previewWindows.removeAll { $0 === controller }
             }
@@ -286,99 +290,4 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
     }
 
 
-}
-
-private final class MarkdownPreviewWindowController: NSWindowController, NSWindowDelegate {
-    var onClose: (() -> Void)?
-    private let file: URL
-    private var monitor: MarkdownFileMonitor?
-    private var lastContents: Data?
-    private let preview: BufferedMarkdownView
-
-    init(file: URL, html: String) {
-        self.file = Settings.getMarkdownFile(from: file)
-        self.lastContents = try? Data(contentsOf: self.file)
-        let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 850, height: 700),
-                              styleMask: [.titled, .closable, .miniaturizable, .resizable],
-                              backing: .buffered, defer: false)
-        window.title = file.lastPathComponent
-        window.representedURL = file
-        window.center()
-
-        preview = BufferedMarkdownView(frame: window.contentView?.bounds ?? .zero)
-        preview.autoresizingMask = [.width, .height]
-        window.contentView = preview
-
-        super.init(window: window)
-        window.delegate = self
-        preview.loadHTMLString(html, baseURL: file.deletingLastPathComponent(), documentURL: self.file)
-        monitor = MarkdownFileMonitor(file: self.file) { [weak self] in
-            self?.reloadFromDisk()
-        }
-    }
-
-    required init?(coder: NSCoder) { nil }
-
-    private func reloadFromDisk() {
-        guard let contents = try? Data(contentsOf: file), contents != lastContents,
-              let body = try? Settings.shared.render(file: file, baseDir: file.deletingLastPathComponent().path) else { return }
-        lastContents = contents
-        let html = Settings.shared.getCompleteHTML(title: window?.title ?? file.lastPathComponent, body: body)
-        preview.loadHTMLString(html, baseURL: file.deletingLastPathComponent(), documentURL: file)
-    }
-
-    func windowWillClose(_ notification: Notification) {
-        monitor = nil
-        onClose?()
-    }
-}
-
-/// Watches both the file inode and its parent directory. The directory event
-/// catches editors that save by renaming a replacement over the original file.
-final class MarkdownFileMonitor {
-    private let file: URL
-    private let onChange: () -> Void
-    private var lastContents: Data?
-    private var fileSource: DispatchSourceFileSystemObject?
-    private var directorySource: DispatchSourceFileSystemObject?
-
-    init(file: URL, onChange: @escaping () -> Void) {
-        self.file = file
-        self.onChange = onChange
-        self.lastContents = try? Data(contentsOf: file)
-        directorySource = makeSource(path: file.deletingLastPathComponent().path, mask: [.write, .rename, .delete]) { [weak self] in
-            self?.armFile()
-            self?.reportChange()
-        }
-        armFile()
-    }
-
-    private func armFile() {
-        fileSource?.cancel()
-        fileSource = makeSource(path: file.path, mask: [.write, .rename, .delete, .revoke]) { [weak self] in
-            self?.armFile()
-            self?.reportChange()
-        }
-    }
-
-    private func reportChange() {
-        guard let contents = try? Data(contentsOf: file), contents != lastContents else { return }
-        lastContents = contents
-        onChange()
-    }
-
-    private func makeSource(path: String, mask: DispatchSource.FileSystemEvent, handler: @escaping () -> Void) -> DispatchSourceFileSystemObject? {
-        let descriptor = open(FileManager.default.fileSystemRepresentation(withPath: path), O_EVTONLY)
-        guard descriptor >= 0 else { return nil }
-        let source = DispatchSource.makeFileSystemObjectSource(fileDescriptor: descriptor, eventMask: mask, queue: .main)
-        source.setEventHandler(handler: handler)
-        source.setCancelHandler { close(descriptor) }
-        source.resume()
-        return source
-    }
-
-    deinit {
-        fileSource?.cancel()
-        directorySource?.cancel()
-    }
 }

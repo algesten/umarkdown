@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F17D00000000000000000001 /* FindBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17D00000000000000000011 /* FindBarView.swift */; };
+		F17D00000000000000000002 /* PreviewSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17D00000000000000000012 /* PreviewSearch.swift */; };
+		F17D00000000000000000003 /* MarkdownPreviewWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17D00000000000000000013 /* MarkdownPreviewWindowController.swift */; };
+		F17D00000000000000000004 /* Find in Resources */ = {isa = PBXBuildFile; fileRef = F17D00000000000000000014 /* Find */; };
 		0342FC81767440D68CFDD7B4 /* wikilink.c in Sources */ = {isa = PBXBuildFile; fileRef = 1DDD0092C9DF487BBB99BB1D /* wikilink.c */; };
 		138DFA4523EA4D8DA48F233D /* wikilink.c in Sources */ = {isa = PBXBuildFile; fileRef = 1DDD0092C9DF487BBB99BB1D /* wikilink.c */; };
 		395D747533D961405F225806 /* hashtag.c in Sources */ = {isa = PBXBuildFile; fileRef = 90F0AF38EA81F6BDFEFD4736 /* hashtag.c */; };
@@ -524,6 +528,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F17D00000000000000000011 /* FindBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindBarView.swift; sourceTree = "<group>"; };
+		F17D00000000000000000012 /* PreviewSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewSearch.swift; sourceTree = "<group>"; };
+		F17D00000000000000000013 /* MarkdownPreviewWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownPreviewWindowController.swift; sourceTree = "<group>"; };
+		F17D00000000000000000014 /* Find */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Find; sourceTree = "<group>"; };
 		1DDD0092C9DF487BBB99BB1D /* wikilink.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = wikilink.c; sourceTree = "<group>"; };
 		376A8FF7F19F47B3AD9B463D /* alert.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = alert.c; sourceTree = "<group>"; };
 		831A8C3F258ABADA00E36182 /* UMarkdown Quick Look Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "UMarkdown Quick Look Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1014,6 +1022,9 @@
 				83598E7925818839004664D3 /* UMarkdown-Bridging-Header.h */,
 				83598E6425818808004664D3 /* AppDelegate.swift */,
 				21B23F786D834A6286ABF101 /* BufferedMarkdownView.swift */,
+				F17D00000000000000000011 /* FindBarView.swift */,
+				F17D00000000000000000012 /* PreviewSearch.swift */,
+				F17D00000000000000000013 /* MarkdownPreviewWindowController.swift */,
 				83598E6625818808004664D3 /* ViewController.swift */,
 				83598E6A2581880A004664D3 /* Main.storyboard */,
 				836B747C259E2D7B00A6A5F7 /* AboutViewController.swift */,
@@ -1078,6 +1089,7 @@
 		837F29172597A01F00A5F7DE /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				F17D00000000000000000014 /* Find */,
 				83598F22258263C0004664D3 /* default.css */,
 				83E7FEF0258FBF37003ECF9B /* highlight */,
 				83425366305D2ACB00BC2C68 /* tex-mml-chtml.js.gz */,
@@ -1424,6 +1436,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F17D00000000000000000004 /* Find in Resources */,
 				830277F72C60E48F0066EBCC /* icon.png in Resources */,
 				83F4B9962586AB9700FC58A7 /* README.md in Resources */,
 				83598E692581880A004664D3 /* Assets.xcassets in Resources */,
@@ -1657,6 +1670,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F17D00000000000000000001 /* FindBarView.swift in Sources */,
+				F17D00000000000000000002 /* PreviewSearch.swift in Sources */,
+				F17D00000000000000000003 /* MarkdownPreviewWindowController.swift in Sources */,
 				834A4EF429E8AD8C00692964 /* autolink.c in Sources */,
 				8376EADD27E8BD3D00AB44B8 /* Log.swift in Sources */,
 				834A4EFC29E8AD8C00692964 /* ext_scanners.c in Sources */,
